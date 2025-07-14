@@ -1,4 +1,4 @@
-name: main
+﻿name: main
 
 on:
   push:
@@ -64,10 +64,19 @@ jobs:
          ref: 'refs/tags/v${{ steps.extractVersion.outputs.version }}'
        })
 
+   - name: Rename App Installer
+     shell: pwsh
+     run: Rename-Item ./ABSHybrid/bin/Release/net8.0-windows10.0.19041.0/win10-x64/AppPackages/ABSHybrid_${{ steps.extractVersion.outputs.version }}.0_Test/ABSHybrid_${{ steps.extractVersion.outputs.version }}.0_x64.msix AutoUpdate.msix
+
+   - name: Rename App Installer
+     shell: pwsh
+     run: Rename-Item ./ABSHybrid/bin/Release/net8.0-windows10.0.19041.0/win10-x64/AppPackages/ABSHybrid_${{ steps.extractVersion.outputs.version }}.0_Test/ABSHybrid_${{ steps.extractVersion.outputs.version }}.0_x64.cer ABSHybrid.cer
+   
    - name: Create Release
      uses: softprops/action-gh-release@v2
      with:
        tag_name: v${{ steps.extractVersion.outputs.version }}
        files: |
-        ./ABSHybrid/bin/Release/net8.0-windows10.0.19041.0/win10-x64/AppPackages/ABSHybrid_${{ steps.extractVersion.outputs.version }}.0_Test/ABSHybrid_${{ steps.extractVersion.outputs.version }}.0_x64.msix
-        ./ABSHybrid/bin/Release/net8.0-windows10.0.19041.0/win10-x64/AppPackages/ABSHybrid_${{ steps.extractVersion.outputs.version }}.0_Test/ABSHybrid_${{ steps.extractVersion.outputs.version }}.0_x64.cer
+        ./ABSHybrid/ABSHybrid.appinstaller
+        ./ABSHybrid/bin/Release/net8.0-windows10.0.19041.0/win10-x64/AppPackages/ABSHybrid_${{ steps.extractVersion.outputs.version }}.0_Test/AutoUpdate.msix
+        ./ABSHybrid/bin/Release/net8.0-windows10.0.19041.0/win10-x64/AppPackages/ABSHybrid_${{ steps.extractVersion.outputs.version }}.0_Test/ABSHybrid.cer
