@@ -69,6 +69,6 @@ jobs:
      with:
        tag_name: v${{ steps.extract_version.outputs.version }}
        files: |
-        ./ABSHybrid/ABSNybrid/bin/Release/net8.0-windows10.0.19041.0/win10-x64/AppPackages/ABSHybrid_${{ steps.extract_version.outputs.version }}.0_Test/ABSHybrid_${{ steps.extract_version.outputs.version }}.0_x64.msix
+        ./ABSHybrid/ABSHybrid/bin/Release/net8.0-windows10.0.19041.0/win10-x64/AppPackages/ABSHybrid_${{ steps.extract_version.outputs.version }}.0_Test/ABSHybrid_${{ steps.extract_version.outputs.version }}.0_x64.msix
         ./ABSHybrid/ABSHybrid/bin/Release/net8.0-windows10.0.19041.0/win10-x64/AppPackages/ABSHybrid_${{ steps.extract_version.outputs.version }}.0_Test/ABSHybrid_${{ steps.extract_version.outputs.version }}.0_x64.cer
 
