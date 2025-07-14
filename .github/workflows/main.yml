@@ -26,11 +26,11 @@ jobs:
 
    - name: Restore
      run: dotnet restore
-     working-directory: ./ABSHybrid
+     
 
    - name: Build
      run: dotnet build -c Release -f:net8.0-windows10.0.19041.0
-     working-directory: ./ABSHybrid
+     
 
    - name: Decode Signing Certificate
      run: |
@@ -42,7 +42,7 @@ jobs:
 
    - name: Publish
      run: dotnet publish -c Release -f:net8.0-windows10.0.19041.0 /p:GenerateAppxPackageOnBuild=true /p:AppxPackageSigningEnabled=true /p:PackageCertificateThumbprint=${{ secrets.SIGNING_CERTIFICATE_THUMBPRINT }}
-     working-directory: ./ABSHybrid
+     
 
    - name: Extract Version
      id: extractVersion
@@ -66,11 +66,11 @@ jobs:
 
    - name: Rename Auto-Update Installer
      shell: pwsh
-     run: Rename-Item ./bin/Release/net8.0-windows10.0.19041.0/win10-x64/AppPackages/ABSHybrid_${{ steps.extractVersion.outputs.version }}.0_Test/ABSHybrid_${{ steps.extractVersion.outputs.version }}.0_x64.msix AutoUpdate.msix
+     run: Rename-Item .ABSHybrid/bin/Release/net8.0-windows10.0.19041.0/win10-x64/AppPackages/ABSHybrid_${{ steps.extractVersion.outputs.version }}.0_Test/ABSHybrid_${{ steps.extractVersion.outputs.version }}.0_x64.msix AutoUpdate.msix
 
    - name: Rename Certificate
      shell: pwsh
-     run: Rename-Item ./bin/Release/net8.0-windows10.0.19041.0/win10-x64/AppPackages/ABSHybrid_${{ steps.extractVersion.outputs.version }}.0_Test/ABSHybrid_${{ steps.extractVersion.outputs.version }}.0_x64.cer ABSHybrid.cer
+     run: Rename-Item .ABSHybrid/bin/Release/net8.0-windows10.0.19041.0/win10-x64/AppPackages/ABSHybrid_${{ steps.extractVersion.outputs.version }}.0_Test/ABSHybrid_${{ steps.extractVersion.outputs.version }}.0_x64.cer ABSHybrid.cer
    
    - name: Create Release
      uses: softprops/action-gh-release@v2
