@@ -52,6 +52,28 @@ jobs:
        [string] $version = [Version] $xml.Project.PropertyGroup.ApplicationDisplayVersion
        echo "version=$($version)" >> $env:GITHUB_OUTPUT
 
+        # Find the actual MSIX file that was created
+       $appPackagesPath = "./ABSHybrid/bin/Release/net8.0-windows10.0.19041.0/win10-x64/AppPackages/"
+       $msixFile = Get-ChildItem $appPackagesPath -Recurse -Filter "*_x64.msix" | Select-Object -First 1
+       
+       if ($msixFile) {
+         $actualFolder = $msixFile.Directory.Name
+         $actualMsixName = $msixFile.Name
+         $actualCerName = $actualMsixName -replace "\.msix$", ".cer"
+         
+         echo "actual-folder=$($actualFolder)" >> $env:GITHUB_OUTPUT
+         echo "actual-msix=$($actualMsixName)" >> $env:GITHUB_OUTPUT
+         echo "actual-cer=$($actualCerName)" >> $env:GITHUB_OUTPUT
+         
+         Write-Host "Found MSIX: $($msixFile.FullName)"
+         Write-Host "Folder: $actualFolder"
+         Write-Host "MSIX: $actualMsixName"
+         Write-Host "CER: $actualCerName"
+       } else {
+         Write-Error "No MSIX file found"
+         exit 1
+       }
+
    - name: Create Tag
      uses: actions/github-script@v5
      with:
@@ -66,11 +88,19 @@ jobs:
 
    - name: Rename Auto-Update Installer
      shell: pwsh
-     run: Rename-Item ./ABSHybrid/bin/Release/net8.0-windows10.0.19041.0/win10-x64/AppPackages/ABSHybrid_${{ steps.extractVersion.outputs.version }}.0_Test/ABSHybrid_${{ steps.extractVersion.outputs.version }}.0_x64.msix AutoUpdate.msix
+     run: |
+       $sourcePath = "./ABSHybrid/bin/Release/net8.0-windows10.0.19041.0/win10-x64/AppPackages/${{ steps.extractVersion.outputs.actual-folder }}/${{ steps.extractVersion.outputs.actual-msix }}"
+       $targetPath = "./ABSHybrid/bin/Release/net8.0-windows10.0.19041.0/win10-x64/AppPackages/${{ steps.extractVersion.outputs.actual-folder }}/AutoUpdate.msix"
+       Rename-Item $sourcePath $targetPath
+       Write-Host "Renamed $sourcePath to AutoUpdate.msix"
 
    - name: Rename Certificate
      shell: pwsh
-     run: Rename-Item ./ABSHybrid/bin/Release/net8.0-windows10.0.19041.0/win10-x64/AppPackages/ABSHybrid_${{ steps.extractVersion.outputs.version }}.0_Test/ABSHybrid_${{ steps.extractVersion.outputs.version }}.0_x64.cer ABSHybrid.cer
+     run: |
+       $sourcePath = "./ABSHybrid/bin/Release/net8.0-windows10.0.19041.0/win10-x64/AppPackages/${{ steps.extractVersion.outputs.actual-folder }}/${{ steps.extractVersion.outputs.actual-cer }}"
+       $targetPath = "./ABSHybrid/bin/Release/net8.0-windows10.0.19041.0/win10-x64/AppPackages/${{ steps.extractVersion.outputs.actual-folder }}/ABSHybrid.cer"
+       Rename-Item $sourcePath $targetPath
+       Write-Host "Renamed certificate to ABSHybrid.cer"
    
    - name: Create Release
      uses: softprops/action-gh-release@v2
@@ -78,5 +108,5 @@ jobs:
        tag_name: v${{ steps.extractVersion.outputs.version }}
        files: |
         ./ABSHybrid/ABSHybrid.appinstaller
-        ./ABSHybrid/bin/Release/net8.0-windows10.0.19041.0/win10-x64/AppPackages/ABSHybrid_${{ steps.extractVersion.outputs.version }}.0_Test/AutoUpdate.msix
-        ./ABSHybrid/bin/Release/net8.0-windows10.0.19041.0/win10-x64/AppPackages/ABSHybrid_${{ steps.extractVersion.outputs.version }}.0_Test/ABSHybrid.cer
+        ./ABSHybrid/bin/Release/net8.0-windows10.0.19041.0/win10-x64/AppPackages/${{ steps.extractVersion.outputs.actual-folder }}/AutoUpdate.msix
+        ./ABSHybrid/bin/Release/net8.0-windows10.0.19041.0/win10-x64/AppPackages/${{ steps.extractVersion.outputs.actual-folder }}/ABSHybrid.cer
