@@ -1,7 +1,10 @@
-﻿using Microsoft.Extensions.Hosting;
+﻿using ABSHybrid.Extensions;
+using Contracts;
+using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Hosting.Internal;
 using Microsoft.Extensions.Logging;
 using Microsoft.FluentUI.AspNetCore.Components;
+using NLog;
 
 namespace ABSHybrid
 {
@@ -10,6 +13,9 @@ namespace ABSHybrid
         public static MauiApp CreateMauiApp()
         {
             var builder = MauiApp.CreateBuilder();
+
+            LogManager.Setup().LoadConfigurationFromFile(string.Concat(Directory.GetCurrentDirectory(), "/nlog.config"));
+
             builder
                 .UseMauiApp<App>()
                 .ConfigureFonts(fonts =>
@@ -19,6 +25,10 @@ namespace ABSHybrid
 
             builder.Services.AddMauiBlazorWebView();
             builder.Services.AddFluentUIComponents();
+
+            builder.SetupConfiguration();
+
+            builder.Services.ConfigureLoggerService();
 
 #if DEBUG
             var env = "Development";
@@ -38,7 +48,13 @@ namespace ABSHybrid
     		builder.Logging.AddDebug();
 #endif
 
-            return builder.Build();
+            var app = builder.Build();
+
+            var logger = app.Services.GetRequiredService<ILoggerManager>();
+
+            logger.LogInfo("Application started successfully.");
+
+            return app;
         }
     }
 }
