@@ -1,19 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <AppInstaller
 	xmlns="http://schemas.microsoft.com/appx/appinstaller/2018"
-	Version="1.4.7.0"
+	Version="1.0.0.0"
 	Uri="https://github.com/parko65/ABSHybrid/releases/latest/download/ABSHybrid.appinstaller">
 	<MainPackage
 		Name="Hesler.Automation.ABSHybrid"
-		Publisher="CN=DP Software"
-		Version="1.4.8.0"
+		Publisher="CN=DP Software, O=Hesler Automation"
+		Version="1.4.9.0"
 		ProcessorArchitecture="x64"
 		Uri="https://github.com/parko65/ABSHybrid/releases/latest/download/AutoUpdate.msix"/>
 	<UpdateSettings>
 		<OnLaunch HoursBetweenUpdateChecks="0" />
-		<ForceUpdateFromAnyVersion>true</ForceUpdateFromAnyVersion>
-	</UpdateSettings>
-	<Dependencies>
-		<Package Name="Microsoft.VCLibs.140.00" Publisher="CN=Microsoft Corporation" Version="14.0.30704.0" ProcessorArchitecture="x64" Uri="https://aka.ms/Microsoft.VCLibs.x64.14.00.Desktop.appx" />
-	</Dependencies>
+	</UpdateSettings>	
 </AppInstaller>
