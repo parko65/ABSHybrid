@@ -25,10 +25,10 @@
         <ApplicationTitle>ABSHybrid</ApplicationTitle>
 
         <!-- App Identifier -->
-        <ApplicationId>Hesler.Automation.ABShybrid</ApplicationId>
+        <ApplicationId>Hesler.Automation.ABSHybrid</ApplicationId>
 
         <!-- Versions -->
-        <ApplicationDisplayVersion>1.3.7</ApplicationDisplayVersion>
+        <ApplicationDisplayVersion>1.3.8</ApplicationDisplayVersion>
         <ApplicationVersion>1</ApplicationVersion>
 
         <SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'ios'">14.2</SupportedOSPlatformVersion>
