@@ -6,7 +6,7 @@
   xmlns:rescap="http://schemas.microsoft.com/appx/manifest/foundation/windows10/restrictedcapabilities"
   IgnorableNamespaces="uap rescap">
 
-  <Identity Name="maui-package-name-placeholder" Publisher="CN=DP Software" Version="0.0.0.0" />
+  <Identity Name="Hesler.Automation.ABSHybrid" Publisher="CN=DP Software" Version="0.0.0.0" />
 
   <mp:PhoneIdentity PhoneProductId="BCCD00FC-18F6-4F66-8F86-DED9CDD339C7" PhonePublisherId="00000000-0000-0000-0000-000000000000"/>
 
