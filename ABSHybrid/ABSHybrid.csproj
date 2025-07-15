@@ -28,7 +28,7 @@
         <ApplicationId>Hesler.Automation.ABSHybrid</ApplicationId>
 
         <!-- Versions -->
-        <ApplicationDisplayVersion>1.4.93</ApplicationDisplayVersion>        
+        <ApplicationDisplayVersion>1.4.94</ApplicationDisplayVersion>        
 
         <SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'ios'">14.2</SupportedOSPlatformVersion>
         <SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'maccatalyst'">14.0</SupportedOSPlatformVersion>
