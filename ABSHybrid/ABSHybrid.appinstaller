@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <AppInstaller
 	xmlns="http://schemas.microsoft.com/appx/appinstaller/2018"
-	Version="1.0.0.0"
+	Version="1.4.7.0"
 	Uri="https://github.com/parko65/ABSHybrid/releases/latest/download/ABSHybrid.appinstaller">
 	<MainPackage
 		Name="Hesler.Automation.ABSHybrid"
 		Publisher="CN=DP Software"
-		Version="1.4.6.0"
+		Version="1.4.7.0"
 		ProcessorArchitecture="x64"
 		Uri="https://github.com/parko65/ABSHybrid/releases/latest/download/AutoUpdate.msix"/>
 	<UpdateSettings>
