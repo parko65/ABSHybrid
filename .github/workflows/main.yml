@@ -44,15 +44,15 @@ jobs:
      run: dotnet publish -c Release -f:net8.0-windows10.0.19041.0 /p:GenerateAppxPackageOnBuild=true /p:AppxPackageSigningEnabled=true /p:PackageCertificateThumbprint=${{ secrets.SIGNING_CERTIFICATE_THUMBPRINT }}
      working-directory: ./ABSHybrid
 
-   - name: Extract Version
+   - name: Extract Version and Find MSIX
      id: extractVersion
      shell: pwsh
      run: |
        $xml = [xml] (Get-Content ./ABSHybrid/ABSHybrid.csproj)
-       [string] $version = [Version] $xml.Project.PropertyGroup.ApplicationDisplayVersion
+       [string] $version = $xml.Project.PropertyGroup.ApplicationDisplayVersion
        echo "version=$($version)" >> $env:GITHUB_OUTPUT
-
-        # Find the actual MSIX file that was created
+       
+       # Find the actual MSIX file that was created
        $appPackagesPath = "./ABSHybrid/bin/Release/net8.0-windows10.0.19041.0/win10-x64/AppPackages/"
        $msixFile = Get-ChildItem $appPackagesPath -Recurse -Filter "*_x64.msix" | Select-Object -First 1
        
@@ -91,16 +91,46 @@ jobs:
      run: |
        $sourcePath = "./ABSHybrid/bin/Release/net8.0-windows10.0.19041.0/win10-x64/AppPackages/${{ steps.extractVersion.outputs.actual-folder }}/${{ steps.extractVersion.outputs.actual-msix }}"
        $targetPath = "./ABSHybrid/bin/Release/net8.0-windows10.0.19041.0/win10-x64/AppPackages/${{ steps.extractVersion.outputs.actual-folder }}/AutoUpdate.msix"
-       Rename-Item $sourcePath $targetPath
-       Write-Host "Renamed $sourcePath to AutoUpdate.msix"
+       
+       Write-Host "Source path: $sourcePath"
+       Write-Host "Target path: $targetPath"
+       
+       # Check if source file exists
+       if (Test-Path $sourcePath) {
+         Write-Host "Source file exists"
+         # Use Copy-Item and Remove-Item instead of Rename-Item to avoid path issues
+         Copy-Item $sourcePath $targetPath
+         Remove-Item $sourcePath
+         Write-Host "Successfully renamed to AutoUpdate.msix"
+       } else {
+         Write-Error "Source file does not exist: $sourcePath"
+         # List what files are actually there
+         $folder = "./ABSHybrid/bin/Release/net8.0-windows10.0.19041.0/win10-x64/AppPackages/${{ steps.extractVersion.outputs.actual-folder }}/"
+         Write-Host "Files in folder:"
+         Get-ChildItem $folder | ForEach-Object { Write-Host "  $_" }
+         exit 1
+       }
 
    - name: Rename Certificate
      shell: pwsh
      run: |
        $sourcePath = "./ABSHybrid/bin/Release/net8.0-windows10.0.19041.0/win10-x64/AppPackages/${{ steps.extractVersion.outputs.actual-folder }}/${{ steps.extractVersion.outputs.actual-cer }}"
        $targetPath = "./ABSHybrid/bin/Release/net8.0-windows10.0.19041.0/win10-x64/AppPackages/${{ steps.extractVersion.outputs.actual-folder }}/ABSHybrid.cer"
-       Rename-Item $sourcePath $targetPath
-       Write-Host "Renamed certificate to ABSHybrid.cer"
+       
+       Write-Host "Certificate source path: $sourcePath"
+       Write-Host "Certificate target path: $targetPath"
+       
+       # Check if source file exists
+       if (Test-Path $sourcePath) {
+         Write-Host "Certificate source file exists"
+         # Use Copy-Item and Remove-Item instead of Rename-Item to avoid path issues
+         Copy-Item $sourcePath $targetPath
+         Remove-Item $sourcePath
+         Write-Host "Successfully renamed certificate to ABSHybrid.cer"
+       } else {
+         Write-Warning "Certificate file does not exist: $sourcePath"
+         Write-Host "This might be normal if no certificate was generated"
+       }
    
    - name: Create Release
      uses: softprops/action-gh-release@v2
